@@ -1120,8 +1120,8 @@ static bool _remove_converter(PyObject* self, SQLSMALLINT sqltype)
 
     // Note: If the realloc fails, the old array is still around and is 1 element too long but
     // everything will still work, so we ignore.
-    pyodbc_realloc((BYTE**)&types, count * sizeof(SQLSMALLINT));
-    pyodbc_realloc((BYTE**)&funcs, count * sizeof(PyObject*));
+    pyodbc_realloc((UCHAR**)&types, count * sizeof(SQLSMALLINT));
+    pyodbc_realloc((UCHAR**)&funcs, count * sizeof(PyObject*));
 
     cnxn->conv_count = count;
     cnxn->conv_types = types;

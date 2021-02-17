@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys, os, re
+import sys, os, re, shutil
 from os.path import exists, abspath, dirname, join, isdir, relpath, expanduser
 
 try:
@@ -210,12 +210,11 @@ def get_compiler_settings(version_str):
         # Python functions take a lot of 'char *' that really should be const.  gcc complains about this *a lot*
         settings['extra_compile_args'].append('-Wno-write-strings')
 
-        cflags = os.popen('odbc_config --cflags 2>/dev/null').read().strip()
-        if cflags:
-            settings['extra_compile_args'].extend(cflags.split())
-        ldflags = os.popen('odbc_config --libs 2>/dev/null').read().strip()
-        if ldflags:
-            settings['extra_link_args'].extend(ldflags.split())
+        cflags = os.popen('iodbc-config --cflags 2>/dev/null').read().strip()
+        settings['extra_compile_args'].extend(cflags.split())
+        ldflags = os.popen('iodbc-config --libs 2>/dev/null').read().strip()
+        settings['extra_link_args'].extend(ldflags.split())
+        settings['libraries'].append('iodbc')
 
         from array import array
         UNICODE_WIDTH = array('u').itemsize
@@ -225,7 +224,6 @@ def get_compiler_settings(version_str):
 #            settings['define_macros'].append(('SQL_WCHART_CONVERT', '1'))
 
         # What is the proper way to detect iODBC, MyODBC, unixODBC, etc.?
-        settings['libraries'].append('odbc')
 
     return settings
 
